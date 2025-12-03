@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>elementX 输入测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .info-box {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #1890ff;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, monospace;
+        }
+        .event-info {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<h1>elementX 输入事件测试</h1>
+
+<div class="info-box">
+    <strong>注意：</strong>
+    <ul>
+        <li><code>e.data</code> - 获取当前输入的字符（删除时为 null）</li>
+        <li><code>e.target.value</code> - 获取输入框完整值</li>
+        <li><code>e.inputType</code> - 获取输入类型（insertText、deleteContentBackward等）</li>
+    </ul>
+</div>
+
+<div class="demo-section">
+    <h2>输入框组件</h2>
+    <elx-input id="myInput" placeholder="在这里输入..."></elx-input>
+    <button onclick="showInputValue()">显示输入框值</button>
+    <button onclick="clearInput()">清空输入框</button>
+</div>
+
+<div class="demo-section">
+    <h2>事件信息</h2>
+    <div class="event-info">
+        <div><strong>最新事件：</strong> <span id="eventType">等待输入...</span></div>
+        <div><strong>e.data：</strong> <span id="eventData">-</span></div>
+        <div><strong>e.target.value：</strong> <span id="eventValue">-</span></div>
+        <div><strong>e.inputType：</strong> <span id="inputType">-</span></div>
+    </div>
+</div>
+
+<div class="demo-section">
+    <h2>段落组件（实时显示）</h2>
+    <elx-paragraph id="myParagraph">初始内容</elx-paragraph>
+    <button onclick="clearParagraph()">清空段落</button>
+</div>
+
+<script src="./dist/elementx.js"></script>
+
+<script>
+    const input = document.getElementById('myInput');
+    const paragraph = document.getElementById('myParagraph');
+    const eventType = document.getElementById('eventType');
+    const eventData = document.getElementById('eventData');
+    const eventValue = document.getElementById('eventValue');
+    const inputType = document.getElementById('inputType');
+
+    // 监听输入框的 input 事件
+    input.addEventListener('input', function(e) {
+        console.log('完整事件对象:', e);
+        console.log('e.data:', e.data);
+        console.log('e.detail:', e.detail);
+        console.log('e.target:', e.target);
+
+        // 更新事件信息显示
+        eventType.textContent = 'input';
+        eventData.textContent = e.data === null ? 'null（删除操作）' : `"${e.data}"`;
+        eventValue.textContent = `"${e.target.value}"`;
+        inputType.textContent = e.inputType || 'unknown';
+
+        // 方法1：使用 e.data（当前输入的字符）
+        const currentChar = e.data;
+
+        // 方法2：使用 e.target.value（完整值）
+        const fullValue = e.target.value;
+
+        // 更新段落内容 - 使用完整值
+        paragraph.data = `当前输入：${fullValue}`;
+
+        // 如果是删除操作，显示特殊提示
+        if (e.inputType === 'deleteContentBackward') {
+            paragraph.data = `删除了字符，当前值：${fullValue}`;
+        }
+    });
+
+    // 监听其他事件
+    input.addEventListener('change', function(e) {
+        eventType.textContent = 'change';
+        eventData.textContent = '-';
+        eventValue.textContent = `"${this.value}"`;
+        inputType.textContent = '-';
+    });
+
+    input.addEventListener('focus', function() {
+        eventType.textContent = 'focus';
+        eventData.textContent = '-';
+        eventValue.textContent = `"${this.value}"`;
+        inputType.textContent = '-';
+    });
+
+    input.addEventListener('blur', function() {
+        eventType.textContent = 'blur';
+        eventData.textContent = '-';
+        eventValue.textContent = `"${this.value}"`;
+        inputType.textContent = '-';
+    });
+
+    // 显示输入框值
+    function showInputValue() {
+        const value = input.value;
+        alert(`输入框当前值：${value}`);
+        console.log('输入框对象:', input);
+        console.log('输入框.value:', value);
+    }
+
+    // 清空输入框
+    function clearInput() {
+        input.value = '';
+        paragraph.data = '输入框已清空';
+
+        // 更新事件信息
+        eventType.textContent = '手动清空';
+        eventData.textContent = '-';
+        eventValue.textContent = '""';
+        inputType.textContent = '-';
+    }
+
+    // 清空段落
+    function clearParagraph() {
+        paragraph.data = '段落已清空';
+    }
+
+    // 键盘事件监听（可选）
+    document.addEventListener('keydown', function(e) {
+        if (e.target === input || input.contains(e.target)) {
+            console.log('键盘按下:', e.key, 'keyCode:', e.keyCode);
+        }
+    });
+
+    // 初始化
+    setTimeout(() => {
+        paragraph.data = '等待输入...';
+        console.log('输入框组件已加载:', input);
+        console.log('段落组件已加载:', paragraph);
+    }, 100);
+</script>
+</body>
+</html>

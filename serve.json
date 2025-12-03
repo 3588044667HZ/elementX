@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "directoryListing": true,
+  "public": ".",
+  "rewrites": [
+    { "source": "/", "destination": "/examples/test-input-value.html" }
+  ]
+}

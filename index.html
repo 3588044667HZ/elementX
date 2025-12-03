@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>elementX 示例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .demo-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<h1>elementX Web Components 示例</h1>
+
+<div class="demo-section">
+    <h2>按钮组件</h2>
+    <elx-button>点击我</elx-button>
+    <elx-button variant="primary">主要按钮</elx-button>
+</div>
+
+<div class="demo-section">
+    <h2>输入框组件</h2>
+    <elx-input id="demo-input" placeholder="输入内容..."></elx-input>
+    <button onclick="updateParagraph()">更新段落</button>
+    <button onclick="clearParagraph()">清空段落</button>
+</div>
+
+<div class="demo-section">
+    <h2>段落组件</h2>
+    <elx-paragraph id="my-paragraph"></elx-paragraph>
+
+    <!-- 方式1：通过属性设置初始值 -->
+    <elx-paragraph data="这是通过属性设置的段落"></elx-paragraph>
+
+    <!-- 方式2：通过 slot 设置初始值（组件会提取内容） -->
+    <elx-paragraph id="slot-paragraph">
+        这是通过 slot 设置的段落内容
+    </elx-paragraph>
+</div>
+
+<!-- 引入 elementx.js（UMD格式） -->
+<script src="./dist/elementx.js"></script>
+
+<script>
+    // 组件会自动注册，可以直接使用
+    console.log('elementX 已加载:', window.elementX);
+
+    // 获取元素引用
+    const button = document.querySelector('elx-button');
+    const input = document.getElementById('demo-input');
+    const paragraph = document.getElementById('my-paragraph');
+    const slotParagraph = document.getElementById('slot-paragraph');
+
+    // 按钮点击事件
+    button.addEventListener('click', () => {
+        alert('按钮被点击了!');
+    });
+
+    // 输入框输入事件
+    input.addEventListener('input', (e) => {
+        console.log('输入变化:');
+        console.log('- 事件对象:', e);
+        console.log('- e.detail:', e.detail);
+        console.log('- e.target:', e.target);
+        console.log('- 输入框值:', e.target.value || input.value);
+
+        // 方法1：从输入框组件获取值
+        const inputValue = e.detail?.value || input.value || e.target.value;
+        console.log('获取到的值:', inputValue);
+
+        // 方法2：实时更新段落内容
+        // paragraph.data = inputValue;
+    });
+
+    // 更新段落按钮
+    function updateParagraph() {
+        const inputValue = input.value || '默认内容';
+        paragraph.data = `输入框内容: ${inputValue} (时间: ${new Date().toLocaleTimeString()})`;
+        console.log('段落已更新:', paragraph.data);
+    }
+
+    // 清空段落按钮
+    function clearParagraph() {
+        paragraph.data = '';
+        console.log('段落已清空');
+    }
+
+    // 监听段落变化
+    paragraph.addEventListener('*', (e) => {
+        console.log('段落事件:', e.type);
+    });
+
+    // 段落自定义事件监听（如果需要）
+    // paragraph.addEventListener('data-change', (e) => {
+    //     console.log('段落数据变化:', e.detail);
+    // });
+
+    // 初始化设置
+    paragraph.data = '这是一个段落组件，内容将通过输入框更新';
+
+    // 打印组件信息
+    console.log('段落组件:', paragraph);
+    console.log('段落 data 属性:', paragraph.data);
+    console.log('slot 段落 data 属性:', slotParagraph.data);
+</script>
+</body>
+</html>

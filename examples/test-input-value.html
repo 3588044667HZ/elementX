@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+    <title>绝对能工作的输入框</title>
+</head>
+<body>
+<h1>绝对简单的输入框组件</h1>
+
+<!-- 组件定义 -->
+<script>
+    class WorkingInput extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({mode: 'open'});
+
+            // 创建input元素
+            const input = document.createElement('input');
+            input.type = 'text';
+
+            // 设置初始值
+            const value = this.getAttribute('value');
+            if (value) input.value = value;
+
+            // 监听输入事件
+            input.addEventListener('input', (e) => {
+                // 更新组件属性
+                this.value = e.target.value;
+
+                // 派发事件
+                this.dispatchEvent(new CustomEvent('input', {
+                    detail: {value: e.target.value},
+                    bubbles: true
+                }));
+            });
+
+            // 添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                    input {
+                        padding: 10px;
+                        border: 2px solid #4CAF50;
+                        border-radius: 5px;
+                        font-size: 16px;
+                        width: 300px;
+                    }
+                `;
+
+            shadow.append(style, input);
+
+            // 保存input引用
+            this._input = input;
+        }
+
+        // Getter
+        get value() {
+            return this._input.value;
+        }
+
+        // Setter
+        set value(newValue) {
+            this._input.value = newValue;
+            this.setAttribute('value', newValue);
+        }
+    }
+
+    customElements.define('working-input', WorkingInput);
+</script>
+
+<!-- 使用组件 -->
+<working-input id="demo"></working-input>
+
+<working-input id="demo1"></working-input>
+
+<div style="margin: 20px;">
+    <button onclick="showValue()">显示值</button>
+    <button onclick="setValue()">设置值</button>
+</div>
+
+<div id="output" style="margin: 20px; padding: 15px; background: #f0f8ff; border-radius: 5px;">
+    值将显示在这里
+</div>
+<div id="output1" style="margin: 20px; padding: 15px; background: #f0f8ff; border-radius: 5px;">
+    值将显示在这里
+</div>
+
+<script>{
+    const input = document.getElementById('demo');
+    const output = document.getElementById('output');
+
+    // 监听输入事件
+    input.addEventListener('input', function (e) {
+        output.innerHTML = `
+                <strong>输入事件触发:</strong><br>
+                this.value: "${this.value}"<br>
+                e.data: "${e.data || 'null'}"
+            `;
+    });
+
+    // 显示值
+    function showValue() {
+        alert(`当前值: ${input.value}`);
+        output.innerHTML = `<strong>直接访问 input.value:</strong> "${input.value}"`;
+    }
+
+    // 设置值
+    function setValue() {
+        const newValue = prompt('请输入新值:', input.value || '新值');
+        if (newValue !== null) {
+            input.value = newValue;
+            showValue();
+        }
+    }
+
+    // 初始显示
+    input.value = '初始值';
+    showValue();
+}</script>
+<script>
+    {
+        const input = document.getElementById('demo1');
+        const output = document.getElementById('output1');
+
+        // 监听输入事件
+        input.addEventListener('input', function (e) {
+            output.innerHTML = `
+                <strong>输入事件触发:</strong><br>
+                this.value: "${this.value}"<br>
+                e.data: "${e.data || 'null'}"
+            `;
+        });
+
+        // 显示值
+        function showValue() {
+            alert(`当前值: ${input.value}`);
+            output.innerHTML = `<strong>直接访问 input.value:</strong> "${input.value}"`;
+        }
+
+        // 设置值
+        function setValue() {
+            const newValue = prompt('请输入新值:', input.value || '新值');
+            if (newValue !== null) {
+                input.value = newValue;
+                showValue();
+            }
+        }
+
+        // 初始显示
+        input.value = '初始值';
+        showValue();
+    }
+
+</script>
+</body>
+</html>

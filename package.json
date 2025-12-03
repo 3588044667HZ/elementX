@@ -1,0 +1,27 @@
+{
+  "name": "elementx",
+  "version": "1.0.0",
+  "description": "A reusable Web Components library with two-way binding",
+  "main": "dist/elementx.js",
+  "module": "dist/elementx.esm.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "npm run build && npm run serve",
+    "simple-build": "node build-simple.js",
+    "serve": "npx serve . -p 3000",
+    "start": "npm run dev"
+  },
+  "keywords": [
+    "web-components",
+    "custom-elements",
+    "elementx"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "rollup": "^4.0.0"
+  }
+}
